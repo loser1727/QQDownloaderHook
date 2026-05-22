@@ -1,0 +1,8 @@
+# 强制 shell 脚本保持 LF 换行符（Linux/GitHub Actions 需要）
+gradlew text eol=lf
+
+# Batch 脚本保持 CRLF（Windows 需要）
+gradlew.bat text eol=crlf
+
+# 其余文件自动处理
+* text=auto
