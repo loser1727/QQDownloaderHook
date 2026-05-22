@@ -1,0 +1,5 @@
+<!-- res/values/strings.xml -->
+<resources>
+    <string name="app_name">应用宝云游戏手柄修复</string>
+    <string name="module_description">拦截应用宝云游戏中蓝牙手柄B键触发返回的问题。需要 LSPosed + Root。</string>
+</resources>

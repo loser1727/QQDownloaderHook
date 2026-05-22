@@ -1,0 +1,7 @@
+id=QQDownloaderHook
+name=应用宝云游戏手柄修复
+version=1.0
+versionCode=1
+author=自动生成
+description=拦截应用宝(com.tencent.android.qqdownloader)云游戏界面中蓝牙手柄B键触发KEYCODE_BACK的问题，使手柄B键在游戏中正常工作
+minApi=82

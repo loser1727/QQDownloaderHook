@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.qqhook">
+
+    <!--
+        LSPosed 模块声明
+        模块功能：拦截应用宝 (com.tencent.android.qqdownloader) 云游戏界面的 KEYCODE_BACK 事件
+        防止蓝牙手柄 B 键触发"返回"操作
+    -->
+    <application
+        android:allowBackup="false"
+        android:label="应用宝云游戏手柄修复"
+        android:description="@string/module_description">
+
+        <!-- LSPosed/EdXposed 模块标识 -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+
+        <!-- 模块描述 -->
+        <meta-data
+            android:name="xposeddescription"
+            android:value="拦截应用宝云游戏中蓝牙手柄B键触发返回的问题" />
+
+        <!-- 最低 Xposed API 版本（82 = Android 5+） -->
+        <meta-data
+            android:name="xposedminversion"
+            android:value="82" />
+
+        <!-- LSPosed 专用：模块作用域声明（指向 res/xml/module_scope.xml） -->
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@xml/module_scope" />
+
+    </application>
+
+</manifest>

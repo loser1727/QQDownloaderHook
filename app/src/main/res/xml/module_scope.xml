@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    LSPosed 模块作用域配置
+    指定本模块只注入以下包名，减少性能影响
+-->
+<scope>
+    <!-- 目标应用：应用宝 -->
+    <package name="com.tencent.android.qqdownloader" />
+</scope>
