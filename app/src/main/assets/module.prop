@@ -1,0 +1,7 @@
+id=QQDownloaderHook
+name=应用宝手柄修复
+version=1.0
+versionCode=1
+author=auto
+description=拦截应用宝蓝牙手柄B键KEYCODE_BACK
+minApi=82
