@@ -3,6 +3,7 @@ name: Build LSPosed Module APK
 on:
   push:
     branches: [ main, master ]
+    tags: [ 'v*' ]
   workflow_dispatch:
 
 jobs:
@@ -50,3 +51,12 @@ jobs:
           name: QQDownloaderHook-Release-APK
           path: app/build/outputs/apk/release/*.apk
           retention-days: 30
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+          generate_release_notes: true
