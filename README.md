@@ -1,9 +1,16 @@
-# 应用宝手柄修复 - LSPosed 模块
+# 应用宝蓝牙手柄 B 键返回修复 - LSPosed / Xposed 模块
 
-拦截 `com.tencent.android.qqdownloader`（应用宝）中  
-蓝牙手柄 **B 键** 触发 `KEYCODE_BACK`（返回键）的问题。
+> 解决蓝牙手柄在应用宝（腾讯应用宝 `com.tencent.android.qqdownloader`）中 B 键误触发返回的问题
+> 通过 Xposed Hook 全局拦截 `KEYCODE_BACK`，打开应用宝即生效
 
-**全局生效**：打开应用宝即生效，无需进入云游戏界面。
+[![Build](https://github.com/loser1727/应用宝手柄返回修复/actions/workflows/build.yml/badge.svg)](https://github.com/loser1727/应用宝手柄返回修复/actions)
+[![Release](https://img.shields.io/github/v/release/loser1727/应用宝手柄返回修复)](https://github.com/loser1727/应用宝手柄返回修复/releases)
+
+## 适用场景
+
+- 使用蓝牙手柄游玩应用宝内的游戏（云游戏、手游等）
+- 手柄 B 键本应映射游戏内操作，却被应用宝拦截为"返回"
+- Android 5.0+，已安装 LSPosed / EdXposed 框架
 
 ## 原理
 
@@ -21,7 +28,7 @@
 
 ## 下载
 
-前往 [Releases](https://github.com/loser1727/QQDownloaderHook/releases) 下载最新 APK。
+前往 [Releases](https://github.com/loser1727/应用宝手柄返回修复/releases) 下载最新 APK。
 
 ## 安装与激活
 
@@ -33,21 +40,16 @@
 
 ## 编译
 
-### GitHub Actions（自动，推荐）
+### GitHub Actions（自动）
 
-推送代码 `git push` 后自动构建，产物在 [Actions](https://github.com/loser1727/QQDownloaderHook/actions) 页面下载。
+推送代码或发布 tag 后自动构建并创建 Release。
 
 ### 本地
 
 ```bash
-cd QQDownloaderHook
 ./gradlew assembleDebug
 # APK: app/build/outputs/apk/debug/app-debug.apk
 ```
-
-### Android Studio
-
-打开项目目录，`Build → Build APK(s)`。
 
 ## 调试
 
@@ -57,29 +59,24 @@ adb logcat -s "QQHook"
 
 期望日志：
 ```
-[QQHook] 已注入应用宝: com.tencent.android.qqdownloader
+[QQHook] 已注入应用宝
 [QQHook] Hook dispatchKeyEvent 成功
 [QQHook] Hook onKeyDown 成功
-# 按下 B 键时：
 [QQHook] dispatchKeyEvent 拦截 KEYCODE_BACK
 ```
 
 ## 工程结构
 
 ```
-QQDownloaderHook/
 ├── build.gradle
 ├── gradlew / gradlew.bat
-├── gradle/wrapper/
-├── .github/workflows/build.yml   # GitHub Actions 自动构建
-└── app/
-    ├── build.gradle
-    └── src/main/
-        ├── AndroidManifest.xml
-        ├── assets/
-        │   ├── java_init.list     # LSPosed Hook 入口
-        │   ├── xposed_init        # EdXposed 兼容
-        │   └── module.prop
-        ├── java/.../MainHook.java # 核心 Hook 逻辑
-        └── res/xml/module_scope.xml
+├── .github/workflows/build.yml
+└── app/src/main/
+    ├── AndroidManifest.xml
+    ├── assets/
+    │   ├── java_init.list
+    │   ├── xposed_init
+    │   └── module.prop
+    ├── java/.../MainHook.java
+    └── res/xml/module_scope.xml
 ```
