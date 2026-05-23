@@ -3,8 +3,8 @@
 > 解决蓝牙手柄在应用宝（腾讯应用宝 `com.tencent.android.qqdownloader`）中 B 键误触发返回的问题
 > 通过 Xposed Hook 全局拦截 `KEYCODE_BACK`，打开应用宝即生效
 
-[![Build](https://github.com/loser1727/应用宝手柄返回修复/actions/workflows/build.yml/badge.svg)](https://github.com/loser1727/应用宝手柄返回修复/actions)
-[![Release](https://img.shields.io/github/v/release/loser1727/应用宝手柄返回修复)](https://github.com/loser1727/应用宝手柄返回修复/releases)
+[![Build](https://github.com/loser1727/QQDownloaderHook/actions/workflows/build.yml/badge.svg)](https://github.com/loser1727/QQDownloaderHook/actions)
+[![Release](https://img.shields.io/github/v/release/loser1727/QQDownloaderHook)](https://github.com/loser1727/QQDownloaderHook/releases)
 
 ## 适用场景
 
@@ -28,7 +28,7 @@
 
 ## 下载
 
-前往 [Releases](https://github.com/loser1727/应用宝手柄返回修复/releases) 下载最新 APK。
+前往 [Releases](https://github.com/loser1727/QQDownloaderHook/releases) 下载最新 APK。
 
 ## 安装与激活
 
