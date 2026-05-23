@@ -3,7 +3,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://artifactory.appodeal.com/appodeal-public/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.2'
@@ -14,6 +14,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://artifactory.appodeal.com/appodeal-public/' }
     }
 }

@@ -34,6 +34,6 @@ android {
 }
 
 dependencies {
-    // XposedBridge API — JitPack (rovo89/XposedBridge)，compileOnly 不打进 APK
-    compileOnly 'com.github.rovo89:XposedBridge:v82'
+    // XposedBridge API — Appodeal 仓库，compileOnly 不打进 APK
+    compileOnly 'de.robv.android.xposed:api:82'
 }
