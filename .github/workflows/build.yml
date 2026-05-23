@@ -28,14 +28,11 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
       - name: Build Debug APK
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: :app:assembleDebug
-          gradle-version: 8.5
-          gradlew: false
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        run: ./gradlew :app:assembleDebug
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -45,13 +42,7 @@ jobs:
           retention-days: 30
 
       - name: Build Release APK
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: :app:assembleRelease
-          gradle-version: 8.5
-          gradlew: false
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        run: ./gradlew :app:assembleRelease
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
