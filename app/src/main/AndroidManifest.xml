@@ -31,6 +31,12 @@
             android:name="xposedscope"
             android:resource="@xml/module_scope" />
 
+        <!-- 重置工具：LSPosed Manager 中点模块名可打开 -->
+        <activity
+            android:name=".ResetActivity"
+            android:label="重置输入系统"
+            android:exported="false" />
+
     </application>
 
 </manifest>
