@@ -1,5 +1,6 @@
 package com.example.qqhook;
 
+import android.app.Activity;
 import android.view.KeyEvent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -9,90 +10,78 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
- * LSPosed 模块主入口
- * 目标：应用宝 (com.tencent.android.qqdownloader) 运行时全局拦截 KEYCODE_BACK
+ * LSPosed 模块 - 应用宝蓝牙手柄 B 键返回修复
  *
- * 原理：
- *   - 手柄 B 键发出 KEYCODE_BACK
- *   - Hook Activity.dispatchKeyEvent() + onKeyDown()
- *   - 仅拦截 BACK，其他按键零开销直通
+ * 目标：拦截应用宝内 KEYCODE_BACK，阻止手柄 B 键触发返回。
  *
- * 性能：Hook 回调中不做任何 I/O（日志），仅做整数比较，延迟可忽略。
+ * 安全策略：
+ * - 通过 lpparam.classLoader 严格限定 Hook 作用域在应用宝进程
+ * - 不在热路径中写日志，零 I/O 零 IPC
  */
 public class MainHook implements IXposedHookLoadPackage {
 
     private static final String TARGET_PACKAGE = "com.tencent.android.qqdownloader";
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         if (!TARGET_PACKAGE.equals(lpparam.packageName)) {
             return;
         }
 
-        XposedBridge.log("[QQHook] 已注入应用宝 v1.0");
+        XposedBridge.log("[QQHook] 注入应用宝 v1.1");
 
-        boolean ok1 = hookDispatchKeyEvent(lpparam.classLoader);
-        boolean ok2 = hookOnKeyDown(lpparam.classLoader);
-
-        XposedBridge.log("[QQHook] dispatchKeyEvent=" + ok1 + " onKeyDown=" + ok2);
-    }
-
-    // -------------------------------------------------------------------------
-    // Hook dispatchKeyEvent —— 最轻量级拦截
-    // -------------------------------------------------------------------------
-    private boolean hookDispatchKeyEvent(ClassLoader classLoader) {
+        // 用目标进程的 ClassLoader 加载 Activity ——
+        // 注意：必须用 loadClass 而非 "android.app.Activity" 字符串，
+        // 防止 LSPosed 回退到 boot classloader 做出全局 Hook
         try {
-            XposedHelpers.findAndHookMethod(
-                "android.app.Activity",
-                classLoader,
-                "dispatchKeyEvent",
-                KeyEvent.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        KeyEvent event = (KeyEvent) param.args[0];
-                        if (event == null) return;
+            Class<?> activityClass = lpparam.classLoader.loadClass("android.app.Activity");
 
-                        // 只拦截 BACK，其他键直接放行，不做任何额外操作
-                        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                            param.setResult(true);
-                        }
-                    }
-                }
-            );
-            return true;
+            hookDispatchKeyEvent(activityClass);
+            hookOnKeyDown(activityClass);
+
+            XposedBridge.log("[QQHook] Hook 安装完成");
         } catch (Throwable e) {
-            XposedBridge.log("[QQHook] dispatchKeyEvent Hook 失败: " + e.getMessage());
-            return false;
+            XposedBridge.log("[QQHook] 安装失败: " + e.getMessage());
         }
     }
 
     // -------------------------------------------------------------------------
-    // Hook onKeyDown —— 兜底，同样零 I/O
+    // dispatchKeyEvent —— 最早拦截，零 I/O 热路径
     // -------------------------------------------------------------------------
-    private boolean hookOnKeyDown(ClassLoader classLoader) {
-        try {
-            XposedHelpers.findAndHookMethod(
-                "android.app.Activity",
-                classLoader,
-                "onKeyDown",
-                int.class,
-                KeyEvent.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        int keyCode = (int) param.args[0];
-
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            param.setResult(true);
-                        }
+    private void hookDispatchKeyEvent(Class<?> activityClass) {
+        XposedHelpers.findAndHookMethod(
+            activityClass,
+            "dispatchKeyEvent",
+            KeyEvent.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) {
+                    KeyEvent event = (KeyEvent) param.args[0];
+                    if (event != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                        param.setResult(true);
                     }
                 }
-            );
-            return true;
-        } catch (Throwable e) {
-            XposedBridge.log("[QQHook] onKeyDown Hook 失败: " + e.getMessage());
-            return false;
-        }
+            }
+        );
+    }
+
+    // -------------------------------------------------------------------------
+    // onKeyDown —— 兜底
+    // -------------------------------------------------------------------------
+    private void hookOnKeyDown(Class<?> activityClass) {
+        XposedHelpers.findAndHookMethod(
+            activityClass,
+            "onKeyDown",
+            int.class,
+            KeyEvent.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) {
+                    if ((int) param.args[0] == KeyEvent.KEYCODE_BACK) {
+                        param.setResult(true);
+                    }
+                }
+            }
+        );
     }
 }
